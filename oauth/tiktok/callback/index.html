@@ -17,7 +17,7 @@
       a { color: #50dda6; }
     </style>
   </head>
-  <body>
+    <body>
     <main>
       <h1>Returning to Cutroom…</h1>
       <p id="status">Keep the local Cutroom app running while the account connection finishes.</p>
@@ -25,10 +25,16 @@
     </main>
     <script>
       const parameters = window.location.search;
+      const query = new URLSearchParams(parameters);
+      const state = query.get("state") || "";
+      const isPublishing = (
+        state.startsWith("pub|") || state.startsWith("publishing|") || state.startsWith("publisher|")
+      );
       const status = document.getElementById("status");
       const link = document.getElementById("continue");
       if (parameters) {
-        const localCallback = `http://127.0.0.1:8789/oauth/tiktok/callback${parameters}`;
+        const targetPort = isPublishing ? "8790" : "8789";
+        const localCallback = `http://127.0.0.1:${targetPort}/oauth/tiktok/callback${parameters}`;
         link.href = localCallback;
         window.setTimeout(() => window.location.replace(localCallback), 250);
       } else {
